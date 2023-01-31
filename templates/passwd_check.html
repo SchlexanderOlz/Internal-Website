@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link href="/generalstyle.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <div id="content"></div>
+    <script>
+        // Check password and load appropriate content
+        function checkPassword(event) {
+            event.preventDefault();
+            const passwd = document.getElementById("password").value;
+            const payload = { "password": passwd };
+
+            fetch("/api/check_password", {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: { "Content-Type": "application/json" },
+            })
+                .then(response => response.json())
+                .then(json_data => {
+                    if (json_data.allowed) {
+                        loadAdminPanel();
+                    } else {
+                        displayError();
+                    }
+                });
+        }
+
+        // Load admin panel content
+        function loadAdminPanel() {
+            fetch("/api/admin_panel")
+                .then(response => response.text())
+                .then(content => {
+                    document.getElementById("content").innerHTML = content;
+                    fetchComplaints();
+                });
+        }
+
+        // Fetch complaints and display on page
+        function fetchComplaints() {
+          fetch("/api/complaints")
+              .then(response => response.json())
+              .then(data => {
+                  const list = document.createElement("ul");
+                  list.id = "complaints";
+                  document.getElementById("content").appendChild(list);
+                  data.complaint.forEach(item => {
+                      const li = document.createElement("li");
+                      li.innerHTML = "Subject: " + item.subject + "\n Content: " + item.content;
+                      list.appendChild(li);
+                  });
+              })
+              .catch(error => console.log(error));
+      }
+
+        // Display error message
+        function displayError() {
+            document.getElementById("content").innerHTML = "Access denied. Incorrect password.";
+        }
+
+        // Form to input password
+        const passwordForm = `
+            <div id="get_password">
+                <form onsubmit="checkPassword(event)">
+                    <label>Password:</label>
+                    <input type="text" id="password">
+                    <br><br>
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        `;
+        document.getElementById("content").innerHTML = passwordForm;
+    </script>
+</body>
+</html>

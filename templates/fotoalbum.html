@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fotoalbum</title>
+<link href="/generalstyle.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<h1>Fotoalbum</h1>
+<nav class="menu">
+    <ul>
+        <li>
+            <a href="http://scholzfamily.local:3000/"> Back to main </a>
+        </li>
+    </ul>
+<p>Fotos will be here later.</p>
+</nav>
+
+<nav class="image_nav">
+    <ul>
+        <button onclick="GetRandomImg()">Random Image </button>
+        <button onclick="NextImage()">Forward</button>
+        <button onclick="LastImage()">Back</button>
+    </ul>
+</nav>
+
+<ul class="image">
+    <img id="random_image" src="/api/images/108_0834.JPG" alt="This is an example", class="album_fotos">
+</ul>
+<nav class="image_nav">
+    <ul>
+        <button onclick="GetRandomImg()">Random Image </button>
+        <button onclick="NextImage()">Forward</button>
+        <button onclick="LastImage()">Back</button>
+    </ul>
+</nav>
+<script type="text/javascript">
+    function GetRandomImg() {
+        fetch("/api/random_image").then(response => {
+            return response.json()
+        }).then(data => {
+            SetSrcImg(data.picture)
+        })
+    }
+
+    function NextImage() {
+        fetch("/api/next_image").then(response => {
+            return response.json()
+        }).then(data => {
+            SetSrcImg(data.picture)
+        })
+    }
+
+    function LastImage() {
+        fetch("/api/last_image").then(response => {
+            return response.json()
+        }).then(data => {
+            SetSrcImg(data.picture)
+        })
+    }
+
+    function SetSrcImg(source) {
+        var img = document.getElementById("random_image")
+        img.src = "/api/images/" + source
+        console.log(img.src)
+    }
+
+</script>
+
+</body>
+</html>

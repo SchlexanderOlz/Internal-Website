@@ -4,7 +4,7 @@ const fs = require('fs')
 const port = 3000
 
 var pictures = []
-var seachdir = "G:/Bilder/2003/"
+var seachdir = "C:/Users/mrexh/OneDrive/Bilder/Eigene Aufnahmen/"
 var currentImage = "Ostern04/138_3883.JPG"
 
 
@@ -145,7 +145,7 @@ app.post('/api/tickets', function (req, res) {
 
 app.get('/admin', function (req, res) {
 
-    if (req.socket.localAddress.replace("::ffff:", "") != "192.168.8.129") {
+    if (req.socket.localAddress.replace("::ffff:", "") == "192.168.8.129") {
         res.writeHead(403, { 'Content-Type': 'text/html' })
         res.end()
     } else {
@@ -199,6 +199,35 @@ app.get('/api/complaints', function (req, res) {
         }
         res.end()
     })
+})
+
+app.get('/calendar', function(req, res) {
+    fs.readFile('/templates/calendar.html', function(error, data) {
+        if (error) {
+            res.writeHead(404)
+        }
+        else {
+            res.writeHead(200, { 'Content-Type': 'text/html' })
+            res.write(data)
+        }
+    })
+
+    res.end()
+})
+
+app.get('/api/date', function(req, res) {
+    res.writeHead(200, {'Content-Type': 'application/json'})
+    const date = new Date()
+
+    const payload = {
+        second : date.getSeconds(),
+        minute : date.getMinutes(),
+        day : date.getDate(),
+        month : date.getMonth(),
+        year : date.getFullYear()
+    }
+    res.write(JSON.stringify(payload))
+    
 })
 
 app.listen(port, function (error) {

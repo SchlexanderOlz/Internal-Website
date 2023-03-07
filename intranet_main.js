@@ -1,10 +1,17 @@
 const express = require('express')
 const app = express()
+
+const sqlite = require('sqlite3').verbose()
+const dbdir = "/db/documents.db"
+const documentsdb = sqlite.Database(dbdir, err => {
+    console.log("Can't find DB: " + err)
+})
+
 const fs = require('fs')
 const port = 3000
 
 var pictures = []
-var seachdir = "C:/Users/mrexh/OneDrive/Bilder/Eigene Aufnahmen/"
+var seachdir = "/etc/Proxy-Server"
 var currentImage = "Ostern04/138_3883.JPG"
 
 
@@ -228,6 +235,23 @@ app.get('/api/date', function(req, res) {
     }
     res.write(JSON.stringify(payload))
     
+})
+
+app.get('/documents', function(req, res) {
+    fs.readFile('templates/documents.html', (error, data) => {
+        if (error) {
+            res.writeHead(404)
+            console.log("Couldnt be found")
+        } else {
+            res.writeHead(200, { 'Content-Type': 'text/html' })
+            res.write(data)
+        }
+        res.end()
+    })
+})
+
+app.post('/api/searchdocument', function(req, res) {
+    documentsdb.run()
 })
 
 app.listen(port, function (error) {

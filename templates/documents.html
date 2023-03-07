@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Documents</title>
+        <link href="/generalstyle.css" type="text/css" rel="stylesheet">
+        <link href="/searchbar.css" type="text/css" rel="stylesheet">
+    </head>
+
+    <body>
+        <h1 class="title">You can find all important documents here</h1>
+        <div class="topnav">
+            <form onsubmit="GetUserInput(event)">
+            <input type="text" placeholder="Search.." id="search">
+            </form>
+        </div>
+
+        <div id="search"></div>
+
+        <script>
+            function GetInput(event) {
+                event.preventDefault()
+                const search = document.getElementById("search").value
+                const payload = {"search" : search}
+
+                fetch("/api/searchdocument", {
+                    method : "POST",
+                    body : JSON.stringify(payload),
+                    headers: { "Content-Type": "application/json" },
+                }).then(response => response.json())
+                  .then(json_data => {
+                    const list = document.createElement("ul")
+                    list.id = "results"
+                    document.getElementById("search").appendChild(list)
+                    json_data.name.forEach(item => {
+                        const li = document.createElement("li");
+                        li.innerHTML = item.name + "\t " +  item.group + "\t " + item.about + "\t" + item.desc;
+                        list.appendChild(li);
+                    })
+                  }).catch(error => console.log(error))
+            }
+        </script>
+    </body>
+</html>

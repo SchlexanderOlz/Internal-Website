@@ -1,0 +1,10 @@
+{
+    "documents" : [
+        {
+            "name" : "Example",
+            "aliases" : "xmple",
+            "Group" : "Example",
+            "path" : "/path/to/file.txt"
+        }
+    ]
+}
